@@ -1,5 +1,12 @@
 /*http://demo.geekslabs.com/materialize/v2.2/layout03/css-icons.html*/
 
+body {
+    padding: 0;
+    margin: 0;
+    height: auto;
+    background-color: #3ca1d1
+}
+
 .default_color {
     background-color: #3ca1d1 !important;
 }
@@ -14,6 +21,11 @@
 
 #intro, #work, #team {
     padding-top: 4rem;
+}
+
+#intro {
+    background: #ffffff;
+    margin-top: -25px;
 }
 
 #index-banner {
@@ -103,7 +115,7 @@ nav ul a {
 }
 
 .cd-headline.type .cd-words-wrapper::after {
-    content: '';
+    /*content: '';*/
     position: absolute;
     right: 0;
     top: 50%;

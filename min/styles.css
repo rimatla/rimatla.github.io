@@ -235,10 +235,14 @@ nav ul a {
 
 @media only screen and (max-width: 480px) {
     .text_h {
-        padding: 4% 0;
-        font-size: 5em;
+        margin: 0 auto;
+        display: block;
+        text-align: center;
+        padding: 100px 10px;
+        font-size: 4em;
         font-weight: 100;
-        color: white;
+        color: #3ca1d1;
+
     }
 }
 

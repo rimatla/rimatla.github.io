@@ -309,3 +309,6 @@ footer.page-footer {
     height: 155px;
 }
 
+.card-reveal .list-of-apps a:hover {
+    color: rebeccapurple;
+}

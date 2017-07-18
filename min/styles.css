@@ -304,3 +304,8 @@ footer.page-footer {
 .padMeMore {
     padding-bottom: 4px;
 }
+
+.card .card-image img {
+    height: 155px;
+}
+

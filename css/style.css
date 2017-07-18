@@ -1,10 +1,3 @@
-/* Custom Stylesheet */
-/**
- *
- * Made By Joash Pereira
- * Thanks for MaterializeCSS.com
- */
-
 .default_color{background-color: #2196F3 !important}
 
 .default_color_text{color: #2196F3 !important}
@@ -245,7 +238,7 @@ nav a.button-collapse {
 }
 
 .card .card-content p {
-    margin: 15px 0px;
+    margin: 15px 0;
 }
 
 .card-avatar .card-content i {
@@ -261,5 +254,5 @@ nav a.button-collapse {
 }
 
 footer.page-footer {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
 }

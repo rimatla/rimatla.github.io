@@ -109,7 +109,7 @@ nav .brand-logo {
 }
 
 #work, #team {
-    background-color: #000000;
+    background-color: #000000 !important;
 }
 
 .text_pink {

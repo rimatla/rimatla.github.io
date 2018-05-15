@@ -4,11 +4,15 @@ body {
     padding: 0;
     margin: 0;
     height: auto;
-    background-color: #3ca1d1
+    background-color: #2b2e3b
+}
+
+.blue-text {
+    color: #3ca1d1;
 }
 
 .default_color {
-    background-color: #3ca1d1 !important;
+    background-color: #2b2e3b !important;
 }
 
 .default_color_text {
@@ -47,9 +51,9 @@ body {
     color: #3ca1d1;
 }
 
-.brand-logo {
+nav .brand-logo {
     position: absolute;
-    color: #fff;
+    color: #3ca1d1;
     display: inline-block;
     font-size: 2.1rem;
     font-style: normal;
@@ -101,7 +105,7 @@ body {
 }
 
 #work, #team {
-    background: #191919;
+    background: #2b2e3b;
 }
 
 .text_pink {
@@ -110,7 +114,7 @@ body {
 
 nav ul a {
     font-size: 1.2rem;
-    color: #000000;
+    color: #3ca1d1;
     letter-spacing: 2px;
     display: block;
     font-weight: 300;

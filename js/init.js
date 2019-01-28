@@ -1,272 +1,340 @@
-(function($){
-  $(function(){
-
-    $('.button-collapse').sideNav();
-	$('.scrollspy').scrollSpy();
+;(function($) {
+  $(function() {
+    $('.button-collapse').sideNav()
+    $('.scrollspy').scrollSpy()
 
     /*** Animate word ***/
 
     //set animation timing
-	var animationDelay = 2500,
-		//loading bar effect
-		barAnimationDelay = 3800,
-		barWaiting = barAnimationDelay - 3000, //3000 is the duration of the transition on the loading bar - set in the scss/css file
-		//letters effect
-		lettersDelay = 50,
-		//type effect
-		typeLettersDelay = 150,
-		selectionDuration = 500,
-		typeAnimationDelay = selectionDuration + 800,
-		//clip effect 
-		revealDuration = 600,
-		revealAnimationDelay = 1500;
-	
-	initHeadline();
-	
+    var animationDelay = 2500,
+      //loading bar effect
+      barAnimationDelay = 3800,
+      barWaiting = barAnimationDelay - 3000, //3000 is the duration of the transition on the loading bar - set in the scss/css file
+      //letters effect
+      lettersDelay = 50,
+      //type effect
+      typeLettersDelay = 150,
+      selectionDuration = 500,
+      typeAnimationDelay = selectionDuration + 800,
+      //clip effect
+      revealDuration = 600,
+      revealAnimationDelay = 1500
 
-	function initHeadline() {
-		singleLetters($('.cd-headline.letters').find('b'));
-		animateHeadline($('.cd-headline'));
-	}
+    initHeadline()
 
-	function singleLetters($words) {
-		$words.each(function(){
-			var word = $(this),
-				letters = word.text().split(''),
-				selected = word.hasClass('is-visible');
-			for (i in letters) {
-				if(word.parents('.rotate-2').length > 0) letters[i] = '<em>' + letters[i] + '</em>';
-				letters[i] = (selected) ? '<i class="in">' + letters[i] + '</i>': '<i>' + letters[i] + '</i>';
-			}
-		    var newLetters = letters.join('');
-		    word.html(newLetters).css('opacity', 1);
-		});
-	}
+    function initHeadline() {
+      singleLetters($('.cd-headline.letters').find('b'))
+      animateHeadline($('.cd-headline'))
+    }
 
-	function animateHeadline($headlines) {
-		var duration = animationDelay;
-		$headlines.each(function(){
-			var headline = $(this);
-			
-			if(headline.hasClass('loading-bar')) {
-				duration = barAnimationDelay;
-				setTimeout(function(){ headline.find('.cd-words-wrapper').addClass('is-loading') }, barWaiting);
-			} else if (headline.hasClass('clip')){
-				var spanWrapper = headline.find('.cd-words-wrapper'),
-					newWidth = spanWrapper.width() + 10
-				spanWrapper.css('width', newWidth);
-			} else if (!headline.hasClass('type') ) {
-				//assign to .cd-words-wrapper the width of its longest word
-				var words = headline.find('.cd-words-wrapper b'),
-					width = 0;
-				words.each(function(){
-					var wordWidth = $(this).width();
-				    if (wordWidth > width) width = wordWidth;
-				});
-				headline.find('.cd-words-wrapper').css('width', width);
-			};
+    function singleLetters($words) {
+      $words.each(function() {
+        var word = $(this),
+          letters = word.text().split(''),
+          selected = word.hasClass('is-visible')
+        for (i in letters) {
+          if (word.parents('.rotate-2').length > 0)
+            letters[i] = '<em>' + letters[i] + '</em>'
+          letters[i] = selected
+            ? '<i class="in">' + letters[i] + '</i>'
+            : '<i>' + letters[i] + '</i>'
+        }
+        var newLetters = letters.join('')
+        word.html(newLetters).css('opacity', 1)
+      })
+    }
 
-			//trigger animation
-			setTimeout(function(){ hideWord( headline.find('.is-visible').eq(0) ) }, duration);
-		});
-	}
+    function animateHeadline($headlines) {
+      var duration = animationDelay
+      $headlines.each(function() {
+        var headline = $(this)
 
-	function hideWord($word) {
-		var nextWord = takeNext($word);
-		
-		if($word.parents('.cd-headline').hasClass('type')) {
-			var parentSpan = $word.parent('.cd-words-wrapper');
-			parentSpan.addClass('selected').removeClass('waiting');	
-			setTimeout(function(){ 
-				parentSpan.removeClass('selected'); 
-				$word.removeClass('is-visible').addClass('is-hidden').children('i').removeClass('in').addClass('out');
-			}, selectionDuration);
-			setTimeout(function(){ showWord(nextWord, typeLettersDelay) }, typeAnimationDelay);
-		
-		} else if($word.parents('.cd-headline').hasClass('letters')) {
-			var bool = ($word.children('i').length >= nextWord.children('i').length) ? true : false;
-			hideLetter($word.find('i').eq(0), $word, bool, lettersDelay);
-			showLetter(nextWord.find('i').eq(0), nextWord, bool, lettersDelay);
+        if (headline.hasClass('loading-bar')) {
+          duration = barAnimationDelay
+          setTimeout(function() {
+            headline.find('.cd-words-wrapper').addClass('is-loading')
+          }, barWaiting)
+        } else if (headline.hasClass('clip')) {
+          var spanWrapper = headline.find('.cd-words-wrapper'),
+            newWidth = spanWrapper.width() + 10
+          spanWrapper.css('width', newWidth)
+        } else if (!headline.hasClass('type')) {
+          //assign to .cd-words-wrapper the width of its longest word
+          var words = headline.find('.cd-words-wrapper b'),
+            width = 0
+          words.each(function() {
+            var wordWidth = $(this).width()
+            if (wordWidth > width) width = wordWidth
+          })
+          headline.find('.cd-words-wrapper').css('width', width)
+        }
 
-		}  else if($word.parents('.cd-headline').hasClass('clip')) {
-			$word.parents('.cd-words-wrapper').animate({ width : '2px' }, revealDuration, function(){
-				switchWord($word, nextWord);
-				showWord(nextWord);
-			});
+        //trigger animation
+        setTimeout(function() {
+          hideWord(headline.find('.is-visible').eq(0))
+        }, duration)
+      })
+    }
 
-		} else if ($word.parents('.cd-headline').hasClass('loading-bar')){
-			$word.parents('.cd-words-wrapper').removeClass('is-loading');
-			switchWord($word, nextWord);
-			setTimeout(function(){ hideWord(nextWord) }, barAnimationDelay);
-			setTimeout(function(){ $word.parents('.cd-words-wrapper').addClass('is-loading') }, barWaiting);
+    function hideWord($word) {
+      var nextWord = takeNext($word)
 
-		} else {
-			switchWord($word, nextWord);
-			setTimeout(function(){ hideWord(nextWord) }, animationDelay);
-		}
-	}
+      if ($word.parents('.cd-headline').hasClass('type')) {
+        var parentSpan = $word.parent('.cd-words-wrapper')
+        parentSpan.addClass('selected').removeClass('waiting')
+        setTimeout(function() {
+          parentSpan.removeClass('selected')
+          $word
+            .removeClass('is-visible')
+            .addClass('is-hidden')
+            .children('i')
+            .removeClass('in')
+            .addClass('out')
+        }, selectionDuration)
+        setTimeout(function() {
+          showWord(nextWord, typeLettersDelay)
+        }, typeAnimationDelay)
+      } else if ($word.parents('.cd-headline').hasClass('letters')) {
+        var bool =
+          $word.children('i').length >= nextWord.children('i').length
+            ? true
+            : false
+        hideLetter($word.find('i').eq(0), $word, bool, lettersDelay)
+        showLetter(nextWord.find('i').eq(0), nextWord, bool, lettersDelay)
+      } else if ($word.parents('.cd-headline').hasClass('clip')) {
+        $word
+          .parents('.cd-words-wrapper')
+          .animate({ width: '2px' }, revealDuration, function() {
+            switchWord($word, nextWord)
+            showWord(nextWord)
+          })
+      } else if ($word.parents('.cd-headline').hasClass('loading-bar')) {
+        $word.parents('.cd-words-wrapper').removeClass('is-loading')
+        switchWord($word, nextWord)
+        setTimeout(function() {
+          hideWord(nextWord)
+        }, barAnimationDelay)
+        setTimeout(function() {
+          $word.parents('.cd-words-wrapper').addClass('is-loading')
+        }, barWaiting)
+      } else {
+        switchWord($word, nextWord)
+        setTimeout(function() {
+          hideWord(nextWord)
+        }, animationDelay)
+      }
+    }
 
-	function showWord($word, $duration) {
-		if($word.parents('.cd-headline').hasClass('type')) {
-			showLetter($word.find('i').eq(0), $word, false, $duration);
-			$word.addClass('is-visible').removeClass('is-hidden');
+    function showWord($word, $duration) {
+      if ($word.parents('.cd-headline').hasClass('type')) {
+        showLetter($word.find('i').eq(0), $word, false, $duration)
+        $word.addClass('is-visible').removeClass('is-hidden')
+      } else if ($word.parents('.cd-headline').hasClass('clip')) {
+        $word
+          .parents('.cd-words-wrapper')
+          .animate({ width: $word.width() + 10 }, revealDuration, function() {
+            setTimeout(function() {
+              hideWord($word)
+            }, revealAnimationDelay)
+          })
+      }
+    }
 
-		}  else if($word.parents('.cd-headline').hasClass('clip')) {
-			$word.parents('.cd-words-wrapper').animate({ 'width' : $word.width() + 10 }, revealDuration, function(){ 
-				setTimeout(function(){ hideWord($word) }, revealAnimationDelay); 
-			});
-		}
-	}
+    function hideLetter($letter, $word, $bool, $duration) {
+      $letter.removeClass('in').addClass('out')
 
-	function hideLetter($letter, $word, $bool, $duration) {
-		$letter.removeClass('in').addClass('out');
-		
-		if(!$letter.is(':last-child')) {
-		 	setTimeout(function(){ hideLetter($letter.next(), $word, $bool, $duration); }, $duration);  
-		} else if($bool) { 
-		 	setTimeout(function(){ hideWord(takeNext($word)) }, animationDelay);
-		}
+      if (!$letter.is(':last-child')) {
+        setTimeout(function() {
+          hideLetter($letter.next(), $word, $bool, $duration)
+        }, $duration)
+      } else if ($bool) {
+        setTimeout(function() {
+          hideWord(takeNext($word))
+        }, animationDelay)
+      }
 
-		if($letter.is(':last-child') && $('html').hasClass('no-csstransitions')) {
-			var nextWord = takeNext($word);
-			switchWord($word, nextWord);
-		} 
-	}
+      if (
+        $letter.is(':last-child') &&
+        $('html').hasClass('no-csstransitions')
+      ) {
+        var nextWord = takeNext($word)
+        switchWord($word, nextWord)
+      }
+    }
 
-	function showLetter($letter, $word, $bool, $duration) {
-		$letter.addClass('in').removeClass('out');
-		
-		if(!$letter.is(':last-child')) { 
-			setTimeout(function(){ showLetter($letter.next(), $word, $bool, $duration); }, $duration); 
-		} else { 
-			if($word.parents('.cd-headline').hasClass('type')) { setTimeout(function(){ $word.parents('.cd-words-wrapper').addClass('waiting'); }, 200);}
-			if(!$bool) { setTimeout(function(){ hideWord($word) }, animationDelay) }
-		}
-	}
+    function showLetter($letter, $word, $bool, $duration) {
+      $letter.addClass('in').removeClass('out')
 
-	function takeNext($word) {
-		return (!$word.is(':last-child')) ? $word.next() : $word.parent().children().eq(0);
-	}
+      if (!$letter.is(':last-child')) {
+        setTimeout(function() {
+          showLetter($letter.next(), $word, $bool, $duration)
+        }, $duration)
+      } else {
+        if ($word.parents('.cd-headline').hasClass('type')) {
+          setTimeout(function() {
+            $word.parents('.cd-words-wrapper').addClass('waiting')
+          }, 200)
+        }
+        if (!$bool) {
+          setTimeout(function() {
+            hideWord($word)
+          }, animationDelay)
+        }
+      }
+    }
 
-	function takePrev($word) {
-		return (!$word.is(':first-child')) ? $word.prev() : $word.parent().children().last();
-	}
+    function takeNext($word) {
+      return !$word.is(':last-child')
+        ? $word.next()
+        : $word
+            .parent()
+            .children()
+            .eq(0)
+    }
 
-	function switchWord($oldWord, $newWord) {
-		$oldWord.removeClass('is-visible').addClass('is-hidden');
-		$newWord.removeClass('is-hidden').addClass('is-visible');
-	}
+    function takePrev($word) {
+      return !$word.is(':first-child')
+        ? $word.prev()
+        : $word
+            .parent()
+            .children()
+            .last()
+    }
 
-	$('.button-collapse').sideNav({
-		menuWidth: 240, // Default is 240
-		closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-	});
+    function switchWord($oldWord, $newWord) {
+      $oldWord.removeClass('is-visible').addClass('is-hidden')
+      $newWord.removeClass('is-hidden').addClass('is-visible')
+    }
 
-	$('.parallax').parallax();
+    $('.button-collapse').sideNav({
+      menuWidth: 240, // Default is 240
+      closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+    })
 
-	var card  = document.querySelectorAll('.card-work');
-  	var transEndEventNames = {
-	      'WebkitTransition' : 'webkitTransitionEnd',
-	      'MozTransition'    : 'transitionend',
-	      'transition'       : 'transitionend'
-	},
-	transEndEventName = transEndEventNames[ Modernizr.prefixed('transition') ];
+    $('.parallax').parallax()
 
-	function addDashes(name) {
-		return name.replace(/([A-Z])/g, function(str,m1){ return '-' + m1.toLowerCase(); });
-	}
+    var card = document.querySelectorAll('.card-work')
+    var transEndEventNames = {
+        WebkitTransition: 'webkitTransitionEnd',
+        MozTransition: 'transitionend',
+        transition: 'transitionend'
+      },
+      transEndEventName = transEndEventNames[Modernizr.prefixed('transition')]
 
-	function getPopup(id) {
-		return document.querySelector('.popup[data-popup="' + id + '"]');
-	}
+    function addDashes(name) {
+      return name.replace(/([A-Z])/g, function(str, m1) {
+        return '-' + m1.toLowerCase()
+      })
+    }
 
-	function getDimensions(el) {
-	   return el.getBoundingClientRect();
-	}
+    function getPopup(id) {
+      return document.querySelector('.popup[data-popup="' + id + '"]')
+    }
 
-	function getDifference(card, popup) {
-		var cardDimensions = getDimensions(card),
-	    	popupDimensions = getDimensions(popup);
+    function getDimensions(el) {
+      return el.getBoundingClientRect()
+    }
 
-		return {
-		  	height: popupDimensions.height / cardDimensions.height,
-		  	width: popupDimensions.width / cardDimensions.width,
-		  	left: popupDimensions.left - cardDimensions.left,
-		  	top: popupDimensions.top - cardDimensions.top
-		}
-	}
+    function getDifference(card, popup) {
+      var cardDimensions = getDimensions(card),
+        popupDimensions = getDimensions(popup)
 
-	function transformCard(card, size) {
-		return card.style[Modernizr.prefixed('transform')] = 'translate(' + size.left + 'px,' + size.top + 'px)' + ' scale(' + size.width + ',' + size.height + ')';
-	}
+      return {
+        height: popupDimensions.height / cardDimensions.height,
+        width: popupDimensions.width / cardDimensions.width,
+        left: popupDimensions.left - cardDimensions.left,
+        top: popupDimensions.top - cardDimensions.top
+      }
+    }
 
-	function hasClass(elem, cls) {
-	    var str = " " + elem.className + " ";
-	    var testCls = " " + cls + " ";
-	    return(str.indexOf(testCls) != -1) ;
-	}
+    function transformCard(card, size) {
+      return (card.style[Modernizr.prefixed('transform')] =
+        'translate(' +
+        size.left +
+        'px,' +
+        size.top +
+        'px)' +
+        ' scale(' +
+        size.width +
+        ',' +
+        size.height +
+        ')')
+    }
 
-	function closest(e) {
-	   var el = e.target || e.srcElement;
-	    if (el = el.parentNode) do { //its an inverse loop
-	        var cls = el.className;
-	        if (cls) {
-	            cls = cls.split(" ");
-	            if (-1 !== cls.indexOf("card-work")) {
-	                return el;
-	                break;
-	            }
-	        }
-	    } while (el = el.parentNode);
-	}
+    function hasClass(elem, cls) {
+      var str = ' ' + elem.className + ' '
+      var testCls = ' ' + cls + ' '
+      return str.indexOf(testCls) != -1
+    }
 
-	function scaleCard(e) {
-		var el = closest(e);
-		var target = el,
-		    id     = target.getAttribute('data-popup-id'),
-		    popup  = getPopup(id);
+    function closest(e) {
+      var el = e.target || e.srcElement
+      if ((el = el.parentNode))
+        do {
+          //its an inverse loop
+          var cls = el.className
+          if (cls) {
+            cls = cls.split(' ')
+            if (-1 !== cls.indexOf('card-work')) {
+              return el
+              break
+            }
+          }
+        } while ((el = el.parentNode))
+    }
 
-		var size = getDifference(target, popup);
+    function scaleCard(e) {
+      var el = closest(e)
+      var target = el,
+        id = target.getAttribute('data-popup-id'),
+        popup = getPopup(id)
 
-	   	target.style[Modernizr.prefixed('transitionDuration')] = '0.5s';
-	   	target.style[Modernizr.prefixed('transitionTimingFunction')] = 'cubic-bezier(0.4, 0, 0.2, 1)';
-	   	target.style[Modernizr.prefixed('transitionProperty')] = addDashes(Modernizr.prefixed('transform'));
-	   	target.style['borderRadius'] = 0;
-	   
-	  	transformCard(target, size);
-	  	onAnimated(target, popup);
-	  	onPopupClick(target, popup);
-	}
+      var size = getDifference(target, popup)
 
-	function onAnimated(card, popup) {
-	 	card.addEventListener(transEndEventName, function transitionEnded() {
-	   		card.style['opacity'] = 0;
-	   		popup.style['visibility'] = 'visible';
-	   		popup.style['zIndex'] = 9999;
-	   		card.removeEventListener(transEndEventName, transitionEnded);
-	 	});
-	}
+      target.style[Modernizr.prefixed('transitionDuration')] = '0.5s'
+      target.style[Modernizr.prefixed('transitionTimingFunction')] =
+        'cubic-bezier(0.4, 0, 0.2, 1)'
+      target.style[Modernizr.prefixed('transitionProperty')] = addDashes(
+        Modernizr.prefixed('transform')
+      )
+      target.style['borderRadius'] = 0
 
-	function onPopupClick(card, popup) {
-		popup.addEventListener('click', function toggleVisibility(e) {
-		  	var size = getDifference(popup, card);
-		  
-		  	card.style['opacity'] = 1;
-		  	card.style['borderRadius'] = '6px';
-		  	hidePopup(e);       
-		  	transformCard(card, size);
-		}, false);
-	}
+      transformCard(target, size)
+      onAnimated(target, popup)
+      onPopupClick(target, popup)
+    }
 
+    function onAnimated(card, popup) {
+      card.addEventListener(transEndEventName, function transitionEnded() {
+        card.style['opacity'] = 0
+        popup.style['visibility'] = 'visible'
+        popup.style['zIndex'] = 9999
+        card.removeEventListener(transEndEventName, transitionEnded)
+      })
+    }
 
-	function hidePopup(e) {
-		e.target.style['visibility'] = 'hidden';
-		e.target.style['zIndex'] = 2;
-	}
+    function onPopupClick(card, popup) {
+      popup.addEventListener(
+        'click',
+        function toggleVisibility(e) {
+          var size = getDifference(popup, card)
 
-	// [].forEach.call(card, function(card) {
-	// 	card.addEventListener('click', scaleCard, false);
-	// });
+          card.style['opacity'] = 1
+          card.style['borderRadius'] = '6px'
+          hidePopup(e)
+          transformCard(card, size)
+        },
+        false
+      )
+    }
 
-	}); // end of document ready
-})(jQuery); // end of jQuery name space
+    function hidePopup(e) {
+      e.target.style['visibility'] = 'hidden'
+      e.target.style['zIndex'] = 2
+    }
+
+    // [].forEach.call(card, function(card) {
+    // 	card.addEventListener('click', scaleCard, false);
+    // });
+  }) // end of document ready
+})(jQuery) // end of jQuery name space
